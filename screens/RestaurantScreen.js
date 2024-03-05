@@ -7,6 +7,7 @@ import { MapPinIcon } from 'react-native-heroicons/solid';
 import DishRow from '../components/DishRow';
 import BasketIcon from '../components/BasketIcon';
 import { setRestaurant } from '../features/restaurantSlice';
+import { useDispatch } from 'react-redux';
 
 const RestaurantScreen = () => {
   const navigation = useNavigation();
