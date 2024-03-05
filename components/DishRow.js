@@ -16,7 +16,7 @@ const DishRow = ({ id, name, description, price, image }) => {
 
   const removeItemFromBasket = () => {
     if (!items.length > 0) return;
-    
+
     dispatch(removeFromBasket({ id }));
   }
 
@@ -53,13 +53,18 @@ const DishRow = ({ id, name, description, price, image }) => {
         <View className="bg-white px-4">
           <View className="flex-row items-center space-x-2 pb-3">
             <TouchableOpacity onPress={removeItemFromBasket}>
-              <MinusCircleIcon color="#00CCBB" size={40}/>
+              <MinusCircleIcon
+              disabled={!items.length <= 0} 
+              color={items.length > 0 ? "#00CCBB" : "gray"} 
+              size={40}/>
             </TouchableOpacity>
 
             <Text>{items.length}</Text>
 
             <TouchableOpacity onPress={addItemToBasket}>
-              <PlusCircleIcon color="#00CCBB" size={40}/>
+              <PlusCircleIcon 
+              color="#00CCBB" 
+              size={40}/>
             </TouchableOpacity>
           </View>
         </View>
