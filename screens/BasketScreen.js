@@ -1,16 +1,19 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { selectRestaurant } from '../features/restaurantSlice';
-import { selectBasketItems } from '../features/basketSlice';
+import { removeFromBasket, selectBasketItems, selectBasketTotal } from '../features/basketSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { XCircleIcon } from "react-native-heroicons/solid";
+import { urlFor } from '../sanity';
+
 
 const BasketScreen = () => { 
   const navigation = useNavigation();
   const restaurant = useSelector(selectRestaurant);
   const items = useSelector(selectBasketItems);
   const [groupedItemsInBasket, setGroupedItemsInBasket] = useState([]);
+  const basketTotal = useSelector(selectBasketTotal);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,7 +49,49 @@ const BasketScreen = () => {
           <TouchableOpacity>
             <Text className="text-[#00CCBB]">Change</Text>
           </TouchableOpacity>
-        </View>       
+        </View>
+
+        <ScrollView className="divide-y divide-gray-200">
+          {Object.entries(groupedItemsInBasket).map(([key, items]) => (
+            <View key={key} className="flex-row items-center space-x-3 bg-white
+            py-2 px-5">
+              <Text className='text-[#00CCBB]'>{items.length} x</Text>
+              <Image
+              source={{
+                url: urlFor(items[0]?.image).url(),
+              }}
+              className="h-12 w-12 rounded-full" />
+              <Text className="flex-1">{items[0]?.name}</Text>
+              <Text className="text-gray-600">£{items[0]?.price}</Text>
+
+              <TouchableOpacity>
+                <Text className='text-[#00CCBB] text-xs'
+                onPress={() => dispatch(removeFromBasket({ id: key }))}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>  
+
+        <View className="p-5 bg-white mt-5 space-y-4">
+          <View className="flex-row justify-between">
+            <Text className="text-gray-400">Subtotal</Text>
+            <Text className="text-gray-400">£{basketTotal}</Text>
+          </View>
+
+          <View className="flex-row justify-between">
+            <Text className="text-gray-400">Delivery Fee</Text>
+            <Text className="text-gray-400">£3.99</Text>
+          </View>
+
+          <View className="flex-row justify-between">
+            <Text>Order Total</Text>
+            <Text className="font-extrabold">£{basketTotal + 3.99}</Text>
+          </View>
+
+          <TouchableOpacity className="rounded-lg bg-[#00CCBB] p-4">
+            <Text className="text-center text-white text-lg font-bold">Place Order</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   )
